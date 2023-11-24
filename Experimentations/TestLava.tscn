@@ -1,0 +1,64 @@
+[gd_scene load_steps=10 format=3 uid="uid://is4vq8iqokr"]
+
+[ext_resource type="PackedScene" uid="uid://bxaaym3xowsxc" path="res://Experimentations/terrain.tscn" id="1_oot4q"]
+[ext_resource type="Material" uid="uid://1vr3plpah2fe" path="res://Experimentations/TestLava.tres" id="2_0binh"]
+[ext_resource type="Script" path="res://Experimentations/lavasim.gd" id="3_7v83f"]
+[ext_resource type="Texture2D" uid="uid://cklfnjnydeh8y" path="res://Experimentations/heightmap64.png" id="5_fxfp3"]
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_7ftpp"]
+energy_multiplier = 4.0
+
+[sub_resource type="Sky" id="Sky_kedwm"]
+sky_material = SubResource("PhysicalSkyMaterial_7ftpp")
+
+[sub_resource type="Environment" id="Environment_8cvig"]
+background_mode = 2
+sky = SubResource("Sky_kedwm")
+tonemap_mode = 3
+ssao_enabled = true
+glow_enabled = true
+glow_normalized = true
+glow_blend_mode = 1
+
+[sub_resource type="QuadMesh" id="QuadMesh_thyte"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4txti"]
+albedo_texture = ExtResource("5_fxfp3")
+texture_filter = 0
+texture_repeat = false
+
+[node name="TestLava" type="Node3D"]
+
+[node name="untitled" parent="." instance=ExtResource("1_oot4q")]
+
+[node name="Landscape" parent="untitled" index="0"]
+surface_material_override/0 = ExtResource("2_0binh")
+surface_material_override/1 = ExtResource("2_0binh")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.965926, 0.12941, -0.224144, 0.0669873, 0.711516, 0.699469, 0.25, -0.69065, 0.678603, 5.07209, 10.5051, 9)
+light_energy = 2.0
+shadow_enabled = true
+directional_shadow_mode = 0
+directional_shadow_max_distance = 22.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_8cvig")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-07, -5.68434e-14, 10, 0, 10, 5.68434e-14, -10, 2.4847e-21, -4.37114e-07, -0.00577736, 13.7882, 0.000683546)
+mesh = SubResource("QuadMesh_thyte")
+surface_material_override/0 = SubResource("StandardMaterial3D_4txti")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-07, -5.68434e-14, 10, 0, 10, 5.68434e-14, -10, 2.4847e-21, -4.37114e-07, -0.00577736, 13.7882, -10.9993)
+mesh = SubResource("QuadMesh_thyte")
+surface_material_override/0 = ExtResource("2_0binh")
+script = ExtResource("3_7v83f")
+heightmap = ExtResource("5_fxfp3")
+points = Array[Vector2i]([Vector2i(32, 32), Vector2i(20, 24), Vector2i(32, 42), Vector2i(216, 18)])
+lava_flow = 20.0
+height_penality = 200
+wait = 0.25
+
+[editable path="untitled"]
