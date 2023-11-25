@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://2r1ytfl0s58s"
-path="res://.godot/imported/lavamap64.png-c9619ef6fcdc9e2a2744182e4f117bbe.ctex"
+uid="uid://vnxs4rk7o0xw"
+path="res://.godot/imported/heightmap64f.png-047ca2e024f67db296c297666e181c58.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Experimentations/lavamap64.png"
-dest_files=["res://.godot/imported/lavamap64.png-c9619ef6fcdc9e2a2744182e4f117bbe.ctex"]
+source_file="res://Experimentations/heightmap64f.png"
+dest_files=["res://.godot/imported/heightmap64f.png-047ca2e024f67db296c297666e181c58.ctex"]
 
 [params]
 

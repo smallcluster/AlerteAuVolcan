@@ -1,0 +1,21 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://bamhqnfnjtkjs"
+path="res://.godot/imported/island.obj-88e83bf0b4cc072a7f9b62d0ea22dc51.mesh"
+
+[deps]
+
+files=["res://.godot/imported/island.obj-88e83bf0b4cc072a7f9b62d0ea22dc51.mesh"]
+
+source_file="res://Experimentations/island.obj"
+dest_files=["res://.godot/imported/island.obj-88e83bf0b4cc072a7f9b62d0ea22dc51.mesh", "res://.godot/imported/island.obj-88e83bf0b4cc072a7f9b62d0ea22dc51.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true

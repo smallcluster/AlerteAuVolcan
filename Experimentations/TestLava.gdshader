@@ -55,19 +55,18 @@ void fragment() {
 	float rock = 1.0 - grass;
 
 
-	float sand = step(0.4, distance(uv,vec2(0.5))) * max(step(0.45, distance(uv,vec2(0.5)) ) , step(0.9, norm_model.g*norm_model.g) );
+	float sand = step(0.45, distance(uv,vec2(0.5))) ;
 	sand = sand * (1.0-mask);
 	
 	grass = grass * (1.0-sand);
 	rock = (1.0-grass) * (1.0-sand);
 	
-	vec3 color =  vec3(0.0, 0.25, 0.0) * grass + lava * mask + vec3(0.1) * rock + vec3(0.5, 0.5, 0.0) * sand;
+	vec3 color =  vec3(0.0, 0.25, 0.0) * grass + lava * mask + vec3(0.1) * rock + vec3(0.5, 0.5, 0.05) * sand;
 	
     
 	EMISSION = debug ? vec3(0.0)  : 1.5 * lava * mask;
 	
 	ALBEDO = debug ? (normals ? norm_model : vec3(density))  : color;
-	
 	ROUGHNESS = 1.0;
 	SPECULAR = 0.0;
 	METALLIC = 0.0;
