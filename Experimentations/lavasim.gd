@@ -6,10 +6,14 @@ extends MeshInstance3D
 @export var reset := false : set = do_reset
 @export var heightmap : Texture2D = null : set = update_heightmap
 
-@export var points : Array[Vector2i] = [] : set = update_points
+@export var lava_points : Texture2D = null : set = update_points
+
+var points : Array[Vector2i] = []
 
 @export var lava_flow := 10.0
 @export var height_penality := 10
+@export var blur_steps : int = 8 : set = update_blur
+@export var normal_scale : float = 1.0 : set = update_normal
 
 @export var play : bool = false
 @export var wait : float = 2.0
@@ -17,11 +21,107 @@ extends MeshInstance3D
 var heightmap_data : Array[float]
 var lava_data : Array[float]
 
+
 var timer : Timer
 var playing := false
 
 
 var lava_tex : ImageTexture
+var normal_tex : ImageTexture
+
+func update_flow_map():
+	if heightmap == null:
+		printerr("No heightmap defined.")
+		show_error_tex()
+	else:
+		normal_tex = build_normal_map(heightmap_data)
+		
+		
+func update_normal(value : float):
+	normal_scale = value
+	update_flow_map()
+	update_material()
+
+func update_blur(value : int):
+	blur_steps = value
+	update_flow_map()
+	update_material()
+
+func sample_height(i : int, j : int, w : int, h : int, data : Array[float]) -> float :
+	if i < 0 or j < 0 or i >= h or j >= w:
+		return 0.0
+	return data[i*w+j]
+
+func blur_vector(index : int, w : int, h : int, data : Array[Vector3]) -> Vector3:
+	# find neighboors
+	var vectors : Array[Vector3] = []
+	var i := index / w
+	var j := index % w
+	if i > 0:
+		vectors.append(data[(i-1)*w+j])
+	if i < h-1:
+		vectors.append(data[(i+1)*w+j])
+	if j > 0:
+		vectors.append(data[i*w+j-1])
+	if j < w-1:
+		vectors.append(data[i*w+j+1])
+	var dir := Vector3(0.0, 0.0, 0.0)
+	for v in vectors:
+		dir += v
+	return dir / len(vectors)
+
+func calc_normal_vector(index : int, w : int, h : int, data : Array[float]) -> Vector3:
+	# find neighboors
+	var neighboors : Array[int] = []
+	var i := index / w
+	var j := index % w
+
+	# sobel filter
+	var s0 := sample_height(i-1,j-1,w,h, data) # top left
+	var s1 := sample_height(i-1,j+1,w,h, data) # top right
+	var s2 := sample_height(i+1,j-1,w,h, data) # bottom left
+	var s3 := sample_height(i+1,j+1,w,h, data) # bottom right
+	var s4 := sample_height(i-1,j,w,h, data) # top
+	var s5 := sample_height(i+1,j,w,h, data) # bottom
+	var s6 := sample_height(i,j-1,w,h, data) # left
+	var s7 := sample_height(i,j+1,w,h, data) # right
+	
+	var n := Vector3( 2.0*s7+s1+s3 - 2.0*s6-s0-s2, -2.0*s4-s0-s1 + 2.0*s5+s2+s3, normal_scale)
+
+	return n.normalized()
+	
+
+func build_normal_map(data : Array[float]) -> ImageTexture:
+	
+	var w := heightmap.get_width()
+	var h := heightmap.get_height()
+	
+	# Generate vector data
+	var vectors : Array[Vector3]
+	vectors.resize(len(data))
+	
+	for i in range(len(data)):
+		vectors[i] = calc_normal_vector(i, w, h, data)
+	
+	var vectors_blured : Array[Vector3]
+	vectors_blured.resize(len(vectors))
+	
+	for k in range(blur_steps):
+		for i in range(len(vectors)):
+			vectors_blured[i] = blur_vector(i, w, h, vectors)
+		vectors = vectors_blured
+	
+	
+	# Generate image
+	var img := Image.create(w, h, false, Image.FORMAT_RGBAF)
+	for i in range(h):
+		for j in range(w):
+			var v = Vector3(0.5, 0.5, 0.5) + 0.5 * vectors[i*w+j]
+			img.set_pixel(j, i, Color(v.x, v.y, v.z, 1.0))
+	
+	return ImageTexture.create_from_image(img)
+	
+	
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -44,18 +144,24 @@ func _process(delta):
 		simulate()
 		
 	
-func update_points(value : Array[Vector2i]):
-	points = value
+func update_points(texture : Texture2D):
 	
-	for p in points :
-		p.x = clamp(p.x, 0, 32 if heightmap == null else heightmap.get_width())
-		p.y = clamp(p.x, 0, 32 if heightmap == null else heightmap.get_height())
+	lava_points = texture
+	
+	if lava_points == null:
+		points = []
+	else:
+		var img := texture.get_image()
+		for x in range(texture.get_width()):
+			for y in range(texture.get_height()):
+				if img.get_pixel(x, y).r > 0:
+					points.append(Vector2i(x,y))
 
 	do_reset()
 
 
 func img_from_data(data : Array[float], w, h) -> Image:
-	var img = Image.create(w, h, false, Image.FORMAT_RGB8)
+	var img = Image.create(w, h, false, Image.FORMAT_RGBAF)
 	for i in range(h):
 		for j in range(w):
 			img.set_pixel(j, i, Color.from_hsv(0.0, 0.0, clamp(data[i*w+j], 0.0, 1.0) ))
@@ -90,6 +196,7 @@ func update_heightmap(texture : Texture2D):
 
 func update_material():
 	get_surface_override_material(0).set_shader_parameter("lava_map", lava_tex)
+	get_surface_override_material(0).set_shader_parameter("normal_map", normal_tex)
 	#mesh.surface_get_material(0).set_shader_parameter("lava_map", lava_tex)
 	
 func show_error_tex():
@@ -118,6 +225,7 @@ func do_reset(value : bool = true):
 		
 		var img := img_from_data(lava_data, w, h)
 		lava_tex = ImageTexture.create_from_image(img)
+		update_flow_map()
 		update_material()
 		
 func softmax(values : Array) -> Array :
