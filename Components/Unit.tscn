@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://byoy0lok1co77"]
+
+[ext_resource type="Script" path="res://Components/Unit.gd" id="1_12a14"]
+
+[node name="Unit" type="CharacterBody3D"]
+script = ExtResource("1_12a14")
+
+[node name="Body" type="CSGCylinder3D" parent="."]
+
+[node name="HitBox" type="CollisionShape3D" parent="."]
+
+[node name="UnitSelected" type="Sprite3D" parent="."]
