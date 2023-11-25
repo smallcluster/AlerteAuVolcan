@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://is4vq8iqokr"]
+[gd_scene load_steps=12 format=3 uid="uid://is4vq8iqokr"]
 
 [ext_resource type="PackedScene" uid="uid://ckmbb30wvps7v" path="res://LavaSim/lava_generator.tscn" id="7_0i3ic"]
 [ext_resource type="ArrayMesh" uid="uid://bamhqnfnjtkjs" path="res://Experimentations/island.obj" id="7_wxia3"]
@@ -32,6 +32,8 @@ script/source = "@tool
 
 extends Label3D
 
+@export var lava_mask : Texture2D
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -40,9 +42,20 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	var p := 0.5 * (Vector2(position.x,position.z) / 10.0 + Vector2.ONE)
 	
-	text = str(0.5 * (Vector2(position.x,position.z) / 10.0 + Vector2.ONE))
+	if lava_mask != null:
+		var size := lava_mask.get_width()
+		var q = Vector2i(clamp(int(p.x * size), 0, size), clamp(int(p.y * size), 0, size))
+		var in_lava := lava_mask.get_image().get_pixelv(q).v > 0.5
+		
+		text = (\"IN LAVA\" if in_lava else \"SAFE\") +\" : \"+ str(p)
 "
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_gaqo1"]
+viewport_path = NodePath("LavaGenerator")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_04y6i"]
 
 [node name="TestLava" type="Node3D"]
 
@@ -66,12 +79,76 @@ mesh = ExtResource("7_wxia3")
 surface_material_override/0 = ExtResource("8_4oxg1")
 
 [node name="Label3D" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.3684, 4.43919, -2.24058)
-text = "(0.08158, 0.387971)"
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.6412, 9.56529, 5.66562)
+billboard = 1
+text = "IN LAVA : (0.78206, 0.783281)"
+font_size = 64
 script = SubResource("GDScript_pf2ci")
+lava_mask = SubResource("ViewportTexture_gaqo1")
 
-[node name="RayCast3D" type="RayCast3D" parent="Label3D"]
-target_position = Vector3(0, -100, 0)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Label3D"]
+transform = Transform3D(0.1, 0, 0, 0, 10, 0, 0, 0, 0.1, 0, -10.1, 0)
+mesh = SubResource("CylinderMesh_04y6i")
+
+[node name="Label3D2" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.08278, 5.69617, -5.71329)
+billboard = 1
+text = "IN LAVA : (0.554139, 0.214336)"
+font_size = 64
+script = SubResource("GDScript_pf2ci")
+lava_mask = SubResource("ViewportTexture_gaqo1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Label3D2"]
+transform = Transform3D(0.1, 0, 0, 0, 10, 0, 0, 0, 0.1, 0, -10.1, 0)
+mesh = SubResource("CylinderMesh_04y6i")
+
+[node name="Label3D3" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.05223, 4.33024, -5.02781)
+billboard = 1
+text = "IN LAVA : (0.247388, 0.248609)"
+font_size = 64
+script = SubResource("GDScript_pf2ci")
+lava_mask = SubResource("ViewportTexture_gaqo1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Label3D3"]
+transform = Transform3D(0.1, 0, 0, 0, 10, 0, 0, 0, 0.1, 0, -10.1, 0)
+mesh = SubResource("CylinderMesh_04y6i")
+
+[node name="Label3D4" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0374289, 12.5992, -0.503666)
+billboard = 1
+text = "IN LAVA : (0.501871, 0.474817)"
+font_size = 64
+script = SubResource("GDScript_pf2ci")
+lava_mask = SubResource("ViewportTexture_gaqo1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Label3D4"]
+transform = Transform3D(0.1, 0, 0, 0, 10, 0, 0, 0, 0.1, 0, -10.1, 0)
+mesh = SubResource("CylinderMesh_04y6i")
+
+[node name="Label3D5" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.00688, 5.53601, 3.6606)
+billboard = 1
+text = "IN LAVA : (0.299656, 0.68303)"
+font_size = 64
+script = SubResource("GDScript_pf2ci")
+lava_mask = SubResource("ViewportTexture_gaqo1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Label3D5"]
+transform = Transform3D(0.1, 0, 0, 0, 10, 0, 0, 0, 0.1, 0, -10.1, 0)
+mesh = SubResource("CylinderMesh_04y6i")
+
+[node name="Label3D6" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.69763, 12.943, -2.59437)
+billboard = 1
+text = "SAFE : (0.884881, 0.370281)"
+font_size = 64
+script = SubResource("GDScript_pf2ci")
+lava_mask = SubResource("ViewportTexture_gaqo1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Label3D6"]
+transform = Transform3D(0.1, 0, 0, 0, 10, 0, 0, 0, 0.1, 0, -10.1, 0)
+mesh = SubResource("CylinderMesh_04y6i")
 
 [node name="LavaGenerator" parent="." instance=ExtResource("7_0i3ic")]
 size = Vector2i(512, 512)

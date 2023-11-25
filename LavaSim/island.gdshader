@@ -46,9 +46,6 @@ void fragment() {
 	// Final lava color
 	vec3 lava = mix(lava1, lava2, m);
 	
-	// Final color
-	// vec3 color = lava + vec3(0.0, 0.5, 0.0) * (1.0-mask);
-	
 	float angle = norm_model.g;
 	
 	float grass = step(rock_slope, angle) * (1.0-mask);
@@ -61,11 +58,11 @@ void fragment() {
 	grass = grass * (1.0-sand);
 	rock = (1.0-grass) * (1.0-sand);
 	
+	// Final color
 	vec3 color =  vec3(0.0, 0.25, 0.0) * grass + lava * mask + vec3(0.1) * rock + vec3(0.5, 0.5, 0.05) * sand;
 	
-    
-	EMISSION = debug ? vec3(0.0)  : 1.5 * lava * mask;
 	
+	EMISSION = debug ? vec3(0.0)  : 1.5 * lava * mask;
 	ALBEDO = debug ? (normals ? norm_model : vec3(density))  : color;
 	
 	ROUGHNESS = 1.0;
