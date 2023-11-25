@@ -1,10 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://is4vq8iqokr"]
+[gd_scene load_steps=10 format=3 uid="uid://is4vq8iqokr"]
 
-[ext_resource type="Material" uid="uid://1vr3plpah2fe" path="res://Experimentations/island.tres" id="2_xy8ed"]
-[ext_resource type="Script" path="res://Experimentations/lavasim.gd" id="3_7v83f"]
-[ext_resource type="Texture2D" uid="uid://vnxs4rk7o0xw" path="res://Experimentations/heightmap64f.png" id="5_ema48"]
-[ext_resource type="Texture2D" uid="uid://cb5m1df7hd037" path="res://Experimentations/lavamap.png" id="6_qji5m"]
+[ext_resource type="PackedScene" uid="uid://ckmbb30wvps7v" path="res://LavaSim/lava_generator.tscn" id="7_0i3ic"]
 [ext_resource type="ArrayMesh" uid="uid://bamhqnfnjtkjs" path="res://Experimentations/island.obj" id="7_wxia3"]
+[ext_resource type="Material" uid="uid://j385knpcdrtc" path="res://LavaSim/island_mat.tres" id="8_4oxg1"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_7ftpp"]
 energy_multiplier = 4.0
@@ -21,8 +19,6 @@ glow_enabled = true
 glow_normalized = true
 glow_blend_mode = 1
 
-[sub_resource type="QuadMesh" id="QuadMesh_thyte"]
-
 [sub_resource type="PlaneMesh" id="PlaneMesh_o3hr5"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v68yh"]
@@ -31,10 +27,27 @@ metallic = 0.73
 metallic_specular = 1.0
 roughness = 0.0
 
+[sub_resource type="GDScript" id="GDScript_pf2ci"]
+script/source = "@tool
+
+extends Label3D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	
+	text = str(0.5 * (Vector2(position.x,position.z) / 10.0 + Vector2.ONE))
+"
+
 [node name="TestLava" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.603383, -0.529439, 0.596342, 0.0669873, 0.711516, 0.69947, -0.794633, 0.461995, -0.393851, 5.07209, 10.5051, -1.99821)
+transform = Transform3D(0.988777, 0.0464903, -0.141985, 0.0669873, 0.711516, 0.699469, 0.133543, -0.70113, 0.700416, 5.07209, 10.5051, -1.99821)
 light_energy = 2.0
 shadow_enabled = true
 directional_shadow_max_distance = 32.5
@@ -42,25 +55,23 @@ directional_shadow_max_distance = 32.5
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_8cvig")
 
-[node name="LavaSimulation" type="MeshInstance3D" parent="."]
-transform = Transform3D(-4.37114e-07, -5.68434e-14, 10, 0, 10, 5.68434e-14, -10, 2.4847e-21, -4.37114e-07, -37.4572, 23.7429, -10.9993)
-mesh = SubResource("QuadMesh_thyte")
-surface_material_override/0 = ExtResource("2_xy8ed")
-script = ExtResource("3_7v83f")
-heightmap = ExtResource("5_ema48")
-lava_points = ExtResource("6_qji5m")
-lava_flow = 1.7
-height_penality = 400
-blur_steps = 2
-normal_scale = 2.0
-wait = 0.05
-
 [node name="Water" type="MeshInstance3D" parent="."]
 transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0.155, 0)
 mesh = SubResource("PlaneMesh_o3hr5")
 surface_material_override/0 = SubResource("StandardMaterial3D_v68yh")
 
 [node name="Island" type="MeshInstance3D" parent="."]
-transform = Transform3D(-6.57717, 0, 7.53265, 0, 10, 0, -7.53265, 0, -6.57717, 0, 0, 0)
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 mesh = ExtResource("7_wxia3")
-surface_material_override/0 = ExtResource("2_xy8ed")
+surface_material_override/0 = ExtResource("8_4oxg1")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.3684, 4.43919, -2.24058)
+text = "(0.08158, 0.387971)"
+script = SubResource("GDScript_pf2ci")
+
+[node name="RayCast3D" type="RayCast3D" parent="Label3D"]
+target_position = Vector3(0, -100, 0)
+
+[node name="LavaGenerator" parent="." instance=ExtResource("7_0i3ic")]
+size = Vector2i(512, 512)

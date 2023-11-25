@@ -6,7 +6,7 @@ uniform sampler2D lava_map;
 uniform sampler2D normal_map;
 
 uniform float treshold = 0.2;
-uniform float rock_slope = 0.7;
+uniform float rock_slope = 0.8;
 uniform float speed = 0.1;
 uniform float scale = 2.0;
 
@@ -67,6 +67,7 @@ void fragment() {
 	EMISSION = debug ? vec3(0.0)  : 1.5 * lava * mask;
 	
 	ALBEDO = debug ? (normals ? norm_model : vec3(density))  : color;
+	
 	ROUGHNESS = 1.0;
 	SPECULAR = 0.0;
 	METALLIC = 0.0;
