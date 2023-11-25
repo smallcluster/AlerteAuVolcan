@@ -51,18 +51,19 @@ directional_shadow_max_distance = 22.0
 environment = SubResource("Environment_8cvig")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(-4.37114e-07, -5.68434e-14, 10, 0, 10, 5.68434e-14, -10, 2.4847e-21, -4.37114e-07, -0.00577736, 13.7882, 0.000683546)
+transform = Transform3D(-4.37114e-07, -5.68434e-14, 10, 0, 10, 5.68434e-14, -10, 2.4847e-21, -4.37114e-07, -0.00577736, 23.7429, 0.000683546)
 mesh = SubResource("QuadMesh_thyte")
 surface_material_override/0 = SubResource("StandardMaterial3D_4txti")
 
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="."]
-transform = Transform3D(-4.37114e-07, -5.68434e-14, 10, 0, 10, 5.68434e-14, -10, 2.4847e-21, -4.37114e-07, -0.00577736, 13.7882, -10.9993)
+transform = Transform3D(-4.37114e-07, -5.68434e-14, 10, 0, 10, 5.68434e-14, -10, 2.4847e-21, -4.37114e-07, -0.00577736, 23.7429, -10.9993)
 mesh = SubResource("QuadMesh_thyte")
 surface_material_override/0 = ExtResource("2_xy8ed")
 script = ExtResource("3_7v83f")
 heightmap = ExtResource("5_fxfp3")
 lava_points = ExtResource("5_70sng")
-height_penality = 500
+lava_flow = 2.0
+height_penality = 200
 blur_steps = 2
 normal_scale = 3.0
 wait = 0.1

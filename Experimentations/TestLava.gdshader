@@ -61,7 +61,7 @@ void fragment() {
 	grass = grass * (1.0-sand);
 	rock = (1.0-grass) * (1.0-sand);
 	
-	vec3 color =  vec3(0.0, 0.25, 0.0) * grass + lava * mask + vec3(0.1) * rock + vec3(0.5, 0.5, 0.2) * sand;
+	vec3 color =  vec3(0.0, 0.25, 0.0) * grass + lava * mask + vec3(0.1) * rock + vec3(0.5, 0.5, 0.0) * sand;
 	
     
 	EMISSION = debug ? vec3(0.0)  : 1.5 * lava * mask;
